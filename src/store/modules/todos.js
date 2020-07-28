@@ -2,33 +2,40 @@
 import axios from "axios";
 
 const state = {
-  todos: [
-    {
-      id: 1,
-      title: "Task One"
-    },
-    {
-      id: 2,
-      title: "Task Two"
-    },
-    {
-      id: 3,
-      title: "Task Three"
-    },
-  ]
+  todos: [],
 };
 
 const getters = {
-  allTodos: (state) => state.todos
+  allTodos: (state) => state.todos,
 };
 
-const actions = {};
+const actions = {
+  // a mutation isn't called directly. It's called using the 'commit' parameter
+  async fetchTodos({ commit }) {
+    const response = await axios.get(
+      "https://jsonplaceholder.typicode.com/todos?_limit=10"
+    );
 
-const mutations = {};
+    commit("setTodos", response.data);
+  },
+  async addTodo({ commit }, title) {
+    const response = await axios.post(
+      "https://jsonplaceholder.typicode.com/todos",
+      { title, completed: false }
+    );
+
+    commit("newTodo", response.data);
+  },
+};
+
+const mutations = {
+  setTodos: (state, todos) => (state.todos = todos),
+  newTodo: (state, newTodo) => state.todos.unshift(newTodo),
+};
 
 export default {
   state,
   getters,
   actions,
-  mutations
-}
+  mutations,
+};
