@@ -16,12 +16,12 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "TodoList",
   methods: {
-    ...mapActions(['fetchTodos', "deleteTodo"])
+    ...mapActions(["fetchTodos", "deleteTodo"]),
   },
   computed: mapGetters(["allTodos"]),
   created() {
     this.fetchTodos();
-  }
+  },
 };
 </script>
 
