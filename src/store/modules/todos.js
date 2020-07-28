@@ -31,16 +31,25 @@ const actions = {
 
     commit("deleteTodo", id);
   },
-  // eslint-disable-next-line no-unused-vars
   async filterTodos({ commit }, event) {
     // Get selected number
-    const limit = parseInt(event.target.options[event.target.options.selectedIndex].innerText);
-    
+    const limit = parseInt(
+      event.target.options[event.target.options.selectedIndex].innerText
+    );
+
     const response = await axios.get(
       `https://jsonplaceholder.typicode.com/todos?_limit=${limit}`
     );
 
-    commit("setTodos", response.data)
+    commit("setTodos", response.data);
+  },
+  async updateTodo({ commit }, updTodo) {
+    const response = await axios.put(
+      `https://jsonplaceholder.typicode.com/todos/${updTodo.id}`,
+      updTodo
+    );
+
+    commit("updateTodo", response.data);
   },
 };
 
@@ -49,6 +58,13 @@ const mutations = {
   newTodo: (state, newTodo) => state.todos.unshift(newTodo),
   deleteTodo: (state, id) =>
     (state.todos = state.todos.filter((todo) => todo.id !== id)),
+  updateTodo: (state, updatedTodo) => {
+    const index = state.todos.findIndex((todo) => todo.id === updatedTodo.id);
+
+    if (index !== -1) {
+      state.todos.splice(index, 1, updatedTodo);
+    }
+  },
 };
 
 export default {

@@ -1,8 +1,21 @@
 <template>
   <div>
     <h3>Todo List</h3>
+
+    <div class="legend">
+      <span>Double click to mark as complete</span>
+      <span> <span class="incomplete-box"></span> = Incomplete </span>
+      <span> <span class="complete-box"></span> = Complete </span>
+    </div>
+
     <div class="todos">
-      <div class="todo" v-for="todo in allTodos" :key="todo.id">
+      <div
+        class="todo"
+        v-for="todo in allTodos"
+        :key="todo.id"
+        @dblclick="onDblClick(todo)"
+        v-bind:class="{'is-complete':todo.completed}"
+      >
         {{ todo.title }}
         <span class="delete-todo" @click="deleteTodo(todo.id)">X</span>
       </div>
@@ -16,7 +29,16 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "TodoList",
   methods: {
-    ...mapActions(["fetchTodos", "deleteTodo"]),
+    ...mapActions(["fetchTodos", "deleteTodo", "updateTodo"]),
+    onDblClick(todo) {
+      const updatedTodo = {
+        id: todo.id,
+        title: todo.title,
+        completed: !todo.completed,
+      };
+
+      this.updateTodo(updatedTodo);
+    },
   },
   computed: mapGetters(["allTodos"]),
   created() {
@@ -46,5 +68,31 @@ export default {
   right: 10px;
   color: #fff;
   cursor: pointer;
+}
+.legend {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+.complete-box {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #35495e;
+}
+.incomplete-box {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #41b883;
+}
+.is-complete {
+  background: #35495e;
+  color: #fff;
+}
+@media (max-width: 500px) {
+  .todos {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
